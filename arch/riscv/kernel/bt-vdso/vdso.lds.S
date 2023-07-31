@@ -41,15 +41,16 @@ SECTIONS
 	. = bt_vdso_B;
 	.text	: { KEEP(*(.bt)) *(.text .text.*) }	:text
 
-	/*
-	. = bt_vdso_A + BT_VDSO_DATA_OFFSET;
 	.data	: {
 		*(.got.plt) *(.got)
 		*(.data .data.* .gnu.linkonce.d.*)
+		*(.dynsbss)
+		*(.sbss .sbss.* .gnu.linkonce.sb.*)
+		*(.scommon)
 		*(.dynbss)
 		*(.bss .bss.* .gnu.linkonce.b.*)
+		*(COMMON)
 	}
-	*/
 }
 
 /*
