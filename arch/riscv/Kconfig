@@ -432,7 +432,7 @@ config HIGHMEM
 	bool "High Memory Support"
 	depends on MMU
 	select KMAP_LOCAL
-	default y
+	default n
 	help
 	  Enable high memory support on riscv64 which uses supports
 	  max 39-bit virtual address spaces.
