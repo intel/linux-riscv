@@ -1081,8 +1081,7 @@ static int sub_probe(struct i2c_client *i2c,
 	return 0;
 }
 
-static int mcu_i2c_probe(struct i2c_client *i2c,
-			const struct i2c_device_id *ignored)
+static int mcu_i2c_probe(struct i2c_client *i2c)
 {
 	int id;
 	int err;

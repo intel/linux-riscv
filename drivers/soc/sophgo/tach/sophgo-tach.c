@@ -296,7 +296,7 @@ static struct platform_driver sophgo_fan_speed_driver = {
 
 static int __init sophgo_fan_speed_init(void)
 {
-	sophgo_fan_speed_class = class_create(THIS_MODULE, DEV_NAME);
+	sophgo_fan_speed_class = class_create(DEV_NAME);
 	if (IS_ERR(sophgo_fan_speed_class)) {
 		pr_err("class create failed\n");
 		return PTR_ERR(sophgo_fan_speed_class);

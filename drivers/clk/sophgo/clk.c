@@ -210,10 +210,12 @@ int postdiv1_2[][3] = {
 	{6, 7, 42}, {7, 7, 49}
 };
 
+/*
 static inline unsigned long abs_diff(unsigned long a, unsigned long b)
 {
 	return (a > b) ? (a - b) : (b - a);
 }
+*/
 
 /*
  * @reg_value: current register value

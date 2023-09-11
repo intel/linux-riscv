@@ -412,7 +412,7 @@ ATTRIBUTE_GROUPS(pinmux);
 
 static struct class  pinmux_class = {
 	.name = "pinmux",
-	.owner = THIS_MODULE,
+//	.owner = THIS_MODULE,
 	.dev_groups = pinmux_groups,
 };
 

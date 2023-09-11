@@ -62,7 +62,7 @@ static int bm_eth_reset_phy(struct platform_device *pdev)
 	return 0;
 }
 
-static void bm_mac_fix_speed(void *priv, unsigned int speed)
+static void bm_mac_fix_speed(void *priv, unsigned int speed, unsigned int mode)
 {
 	struct bm_mac *bsp_priv = priv;
 	unsigned long rate = 125000000;
@@ -154,7 +154,7 @@ static void bm_dwmac_probe_config_dt(struct platform_device *pdev, struct plat_s
 							     plat->multicast_filter_bins);
 	plat->has_gmac4 = 1;
 	plat->has_gmac = 0;
-	plat->tso_en = 1;
+	//plat->tso_en = 1;
 	plat->pmt = 0;
 }
 
@@ -246,6 +246,25 @@ err_remove_config_dt:
 	return ret;
 }
 
+/**
+ * stmmac_pltfr_remove
+ * @pdev: platform device pointer
+ * Description: this function calls the main to free the net resources
+ * and calls the platforms hook and release the resources (e.g. mem).
+ */
+static int bm_dwmac_pltfr_remove(struct platform_device *pdev)
+{
+	struct net_device *ndev = platform_get_drvdata(pdev);
+	struct stmmac_priv *priv = netdev_priv(ndev);
+	struct plat_stmmacenet_data *plat = priv->plat;
+
+	stmmac_pltfr_remove_no_dt(pdev);
+	stmmac_remove_config_dt(pdev, plat);
+
+	return 0;
+}
+
+
 static const struct of_device_id bm_dwmac_match[] = {
 	{ .compatible = "bitmain,ethernet" },
 	{ }
@@ -254,7 +273,7 @@ MODULE_DEVICE_TABLE(of, bm_dwmac_match);
 
 static struct platform_driver bm_dwmac_driver = {
 	.probe  = bm_dwmac_probe,
-	.remove = stmmac_pltfr_remove,
+	.remove = bm_dwmac_pltfr_remove,
 	.driver = {
 		.name           = "bm-dwmac",
 		.pm		= &stmmac_pltfr_pm_ops,

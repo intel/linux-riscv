@@ -9,6 +9,8 @@
 #include "smi_drv.h"
 #include <linux/console.h>
 #include <linux/module.h>
+#include <drm/drm_fbdev_generic.h>
+#include <drm/drm_modeset_helper.h>
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 4, 0)
 #include <drm/drmP.h>
@@ -490,7 +492,7 @@ static struct drm_driver driver = {
 #else
 	.dumb_map_offset		  = drm_gem_vram_driver_dumb_mmap_offset,
 #endif
-	.gem_prime_mmap		  = drm_gem_prime_mmap,
+//	.gem_prime_mmap		  = drm_gem_prime_mmap,
 #elif LINUX_VERSION_CODE >= KERNEL_VERSION(5, 3, 0)
 	 DRM_GEM_VRAM_DRIVER,
 #else
@@ -509,8 +511,8 @@ static struct drm_driver driver = {
 	.irq_uninstall = smi_irq_uninstall,
 	.irq_handler = smi_drm_interrupt,
 #endif
-	.prime_handle_to_fd = drm_gem_prime_handle_to_fd,
-	.prime_fd_to_handle = drm_gem_prime_fd_to_handle,
+//	.prime_handle_to_fd = drm_gem_prime_handle_to_fd,
+//	.prime_fd_to_handle = drm_gem_prime_fd_to_handle,
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 3, 0)
 	.gem_prime_import = drm_gem_prime_import,
