@@ -86,6 +86,9 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_res)
 	if (ret)
 		reg_io_width = 4;
 
+#ifdef CONFIG_SOC_SOPHGO
+	check_clk = false;
+#else
 	ret = of_hwspin_lock_get_id(np, 0);
 	if (ret > 0 || (IS_ENABLED(CONFIG_HWSPINLOCK) && ret == 0)) {
 		syscon_config.use_hwlock = true;
@@ -103,6 +106,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_res)
 			goto err_regmap;
 		}
 	}
+#endif
 
 	syscon_config.name = kasprintf(GFP_KERNEL, "%pOFn@%pa", np, &res.start);
 	syscon_config.reg_stride = reg_io_width;
