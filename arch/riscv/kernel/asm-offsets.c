@@ -114,6 +114,10 @@ void asm_offsets(void)
 	OFFSET(PT_STATUS, pt_regs, status);
 	OFFSET(PT_BADADDR, pt_regs, badaddr);
 	OFFSET(PT_CAUSE, pt_regs, cause);
+#ifdef CONFIG_SOFT_ISA
+	OFFSET(PT_BT_RA, pt_regs, bt_ra);
+	OFFSET(PT_BT_CB, pt_regs, bt_cb);
+#endif
 
 	OFFSET(SUSPEND_CONTEXT_REGS, suspend_context, regs);
 

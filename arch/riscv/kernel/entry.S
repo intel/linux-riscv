@@ -44,6 +44,11 @@ _save_context:
 	REG_S x5,  PT_T0(sp)
 	save_from_x6_to_x31
 
+#ifdef CONFIG_SOFT_ISA
+	li t0, SR_SUM
+	csrrs s1, CSR_STATUS, t0
+	li t0, SR_FS_VS
+#else
 	/*
 	 * Disable user-mode memory access as it should only be set in the
 	 * actual user copy routines.
@@ -52,6 +57,7 @@ _save_context:
 	 * or vector in kernel space.
 	 */
 	li t0, SR_SUM | SR_FS_VS
+#endif
 
 	REG_L s0, TASK_TI_USER_SP(tp)
 	csrrc s1, CSR_STATUS, t0

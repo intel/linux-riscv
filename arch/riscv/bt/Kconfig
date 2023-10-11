@@ -1,0 +1,6 @@
+menuconfig SOFT_ISA
+	bool "Intel Soft-ISA Technology"
+	default y
+	help
+	  Transforming RISCV ISA to another ISA version.
+	  Support hosting binary translation layer via VDSO-like way.

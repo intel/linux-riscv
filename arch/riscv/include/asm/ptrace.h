@@ -51,6 +51,12 @@ struct pt_regs {
 	unsigned long cause;
 	/* a0 value before the syscall */
 	unsigned long orig_a0;
+#ifdef CONFIG_SOFT_ISA
+	/* userspace emulator's control block pointer */
+	unsigned long bt_cb;
+	/* the next instruction address after emulation */
+	unsigned long bt_ra;
+#endif
 };
 
 #define PTRACE_SYSEMU			0x1f

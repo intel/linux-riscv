@@ -49,6 +49,7 @@
 #include <linux/rseq.h>
 #include <asm/param.h>
 #include <asm/page.h>
+#include <vdso/soft_isa.h>
 
 #ifndef ELF_COMPAT
 #define ELF_COMPAT 0
@@ -1318,6 +1319,9 @@ out_free_interp:
 		current->brk_randomized = 1;
 #endif
 	}
+
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+	mm->brk = mm->start_brk = MAX(mm->brk, BT_VDSO_END);
 
 	if (current->personality & MMAP_PAGE_ZERO) {
 		/* Why this, you ask???  Well SVr4 maps page 0 as read-only,

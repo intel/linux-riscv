@@ -17,6 +17,11 @@
 #include <vdso/datapage.h>
 #include <vdso/vsyscall.h>
 
+#ifdef CONFIG_SOFT_ISA
+#include <vdso/soft_isa.h>
+extern char bt_vdso_start[], bt_vdso_end[];
+#endif
+
 enum vvar_pages {
 	VVAR_DATA_PAGE_OFFSET,
 	VVAR_TIMENS_PAGE_OFFSET,
@@ -51,6 +56,16 @@ struct __vdso_info {
 };
 
 static struct __vdso_info vdso_info;
+#ifdef CONFIG_SOFT_ISA
+static struct __vdso_info bt_vdso_info;
+static int bt_vdso_mremap(const struct vm_special_mapping *sm,
+		       struct vm_area_struct *new_vma)
+{
+	current->mm->context.bt_vdso = (void *)new_vma->vm_start;
+
+	return 0;
+}
+#endif
 #ifdef CONFIG_COMPAT
 static struct __vdso_info compat_vdso_info;
 #endif
@@ -201,11 +216,35 @@ static struct __vdso_info compat_vdso_info __ro_after_init = {
 };
 #endif
 
+#ifdef CONFIG_SOFT_ISA
+static struct vm_special_mapping rv_bt_vdso_maps[] __ro_after_init = {
+	[RV_VDSO_MAP_VVAR] = {
+		.name   = "[bt-vvar]",
+		.fault = vvar_fault,
+	},
+	[RV_VDSO_MAP_VDSO] = {
+		.name   = "[bt-vdso]",
+		.mremap = bt_vdso_mremap,
+	},
+};
+
+static struct __vdso_info bt_vdso_info __ro_after_init = {
+	.name = "bt-vdso",
+	.vdso_code_start = bt_vdso_start,
+	.vdso_code_end = bt_vdso_end,
+	.dm = &rv_bt_vdso_maps[RV_VDSO_MAP_VVAR],
+	.cm = &rv_bt_vdso_maps[RV_VDSO_MAP_VDSO],
+};
+#endif
+
 static int __init vdso_init(void)
 {
 	__vdso_init(&vdso_info);
 #ifdef CONFIG_COMPAT
 	__vdso_init(&compat_vdso_info);
+#endif
+#ifdef CONFIG_SOFT_ISA
+	__vdso_init(&bt_vdso_info);
 #endif
 
 	return 0;
@@ -255,6 +294,47 @@ up_fail:
 	return PTR_ERR(ret);
 }
 
+#ifdef CONFIG_SOFT_ISA
+extern long populate_vma_page_range(struct vm_area_struct *vma,
+                unsigned long start, unsigned long end, int *locked);
+static int __bt_setup_additional_pages(struct mm_struct *mm,
+				    struct linux_binprm *bprm,
+				    int uses_interp,
+				    struct __vdso_info *vdso_info)
+{
+	unsigned long vdso_base, vdso_text_len;
+	void *ret;
+	int locked = 0;
+
+	BUILD_BUG_ON(VVAR_NR_PAGES != __VVAR_PAGES);
+
+	vdso_text_len = vdso_info->vdso_pages << PAGE_SHIFT;
+
+	vdso_base = BT_VDSO_ADDR;
+
+	mm->context.bt_vdso = (void *)vdso_base;
+
+	ret =
+	   _install_special_mapping(mm, vdso_base, vdso_text_len,
+	      (VM_READ | VM_EXEC | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC),
+	      vdso_info->cm);
+
+	if (IS_ERR(ret))
+		goto up_fail;
+	else
+		populate_vma_page_range(ret, vdso_base,
+					vdso_base + vdso_text_len, &locked);
+	if (locked)
+		mmap_read_unlock(mm);
+
+	return 0;
+
+up_fail:
+	mm->context.bt_vdso = NULL;
+	return PTR_ERR(ret);
+}
+#endif
+
 #ifdef CONFIG_COMPAT
 int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
 				       int uses_interp)
@@ -282,6 +362,12 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
 		return -EINTR;
 
 	ret = __setup_additional_pages(mm, bprm, uses_interp, &vdso_info);
+
+#ifdef CONFIG_SOFT_ISA
+	if (ret)
+		return -EINTR;
+	ret = __bt_setup_additional_pages(mm, bprm, uses_interp, &bt_vdso_info);
+#endif
 	mmap_write_unlock(mm);
 
 	return ret;

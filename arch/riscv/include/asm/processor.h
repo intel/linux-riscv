@@ -82,6 +82,9 @@ struct thread_struct {
 	unsigned long bad_cause;
 	unsigned long vstate_ctrl;
 	struct __riscv_v_ext_state vstate;
+#ifdef CONFIG_SOFT_ISA
+	unsigned long bt_cb;	/* BT control block pointer */
+#endif
 };
 
 /* Whitelist the fstate from the task_struct for hardened usercopy */
@@ -92,9 +95,16 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
 	*size = sizeof_field(struct thread_struct, fstate);
 }
 
+#ifdef CONFIG_SOFT_ISA
+#define INIT_THREAD {					\
+	.sp = sizeof(init_stack) + (long)&init_stack,	\
+	.bt_cb = 0UL,					\
+}
+#else
 #define INIT_THREAD {					\
 	.sp = sizeof(init_stack) + (long)&init_stack,	\
 }
+#endif
 
 #define task_pt_regs(tsk)						\
 	((struct pt_regs *)(task_stack_page(tsk) + THREAD_SIZE		\

@@ -149,7 +149,7 @@ DO_ERROR_INFO(do_trap_insn_misaligned,
 DO_ERROR_INFO(do_trap_insn_fault,
 	SIGSEGV, SEGV_ACCERR, "instruction access fault");
 
-asmlinkage __visible __trap_section void do_trap_insn_illegal(struct pt_regs *regs)
+static void __do_trap_insn_illegal(struct pt_regs *regs)
 {
 	bool handled;
 
@@ -236,6 +236,29 @@ DO_ERROR_INFO(do_trap_ecall_s,
 	SIGILL, ILL_ILLTRP, "environment call from S-mode");
 DO_ERROR_INFO(do_trap_ecall_m,
 	SIGILL, ILL_ILLTRP, "environment call from M-mode");
+
+#ifdef CONFIG_SOFT_ISA
+extern int soft_isa_exec(struct pt_regs *regs);
+asmlinkage __visible __trap_section void do_trap_insn_illegal(struct pt_regs *regs)
+{
+	int rc;
+
+	current->thread.bad_cause = regs->cause;
+
+	if (user_mode(regs)) {
+		rc = soft_isa_exec(regs);
+		if (!rc)
+			return;
+	}
+
+	__do_trap_insn_illegal(regs);
+}
+#else
+asmlinkage __visible __trap_section void do_trap_insn_illegal(struct pt_regs *regs)
+{
+	__do_trap_insn_illegal(regs);
+}
+#endif
 
 static inline unsigned long get_break_insn_length(unsigned long pc)
 {
