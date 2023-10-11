@@ -253,6 +253,7 @@ SYSCALL_DEFINE0(rt_sigreturn)
 
 	regs->cause = -1UL;
 
+	current->thread.bt_nest_lvl--;
 	return regs->a0;
 
 badframe:
@@ -424,6 +425,7 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
 		ret = setup_rt_frame(ksig, oldset, regs);
 
 	signal_setup_done(ret, ksig, 0);
+	current->thread.bt_nest_lvl++;
 }
 
 void arch_do_signal_or_restart(struct pt_regs *regs)

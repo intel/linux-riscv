@@ -67,6 +67,14 @@
 #define TASK_UNMAPPED_BASE	PAGE_ALIGN(TASK_SIZE / 3)
 #endif
 
+#ifdef CONFIG_SOFT_ISA
+/* Refer to include/uapi/asm-generic/signal.h, totally 31 signal types.
+ * App execution is the first BT level, so define the MAX as (1 + 31).
+ * No signal nesting from the signals which are being handled.
+ */
+#define BT_MAX_NEST_LEVEL	32
+#endif
+
 #ifndef __ASSEMBLY__
 
 struct task_struct;
@@ -83,7 +91,9 @@ struct thread_struct {
 	unsigned long vstate_ctrl;
 	struct __riscv_v_ext_state vstate;
 #ifdef CONFIG_SOFT_ISA
-	unsigned long bt_cb;	/* BT control block pointer */
+	/* BT control block pointers */
+	unsigned long bt_cbs[BT_MAX_NEST_LEVEL];
+	unsigned long bt_nest_lvl;
 #endif
 };
 
@@ -98,7 +108,8 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
 #ifdef CONFIG_SOFT_ISA
 #define INIT_THREAD {					\
 	.sp = sizeof(init_stack) + (long)&init_stack,	\
-	.bt_cb = 0UL,					\
+	.bt_cbs = {0UL},					\
+	.bt_nest_lvl = 0,				\
 }
 #else
 #define INIT_THREAD {					\

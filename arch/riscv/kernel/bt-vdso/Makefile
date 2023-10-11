@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # Copied from arch/tile/kernel/vdso/Makefile
 
-ifeq ($(UC_BUILD),)
-	$(error pls set UNICORN build path via env var UC_BUILD)
-endif
+#ifeq ($(UC_BUILD),)
+#	$(error pls set UNICORN build path via env var UC_BUILD)
+#endif
 
 # Absolute relocation type $(ARCH_REL_TYPE_ABS) needs to be defined before
 # the inclusion of generic Makefile.
