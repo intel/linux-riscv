@@ -31,8 +31,8 @@ ifeq ($(CONFIG_ARCH_RV64I),y)
 	BITS := 64
 	UTS_MACHINE := riscv64
 
-	KBUILD_CFLAGS += -mabi=lp64
-	KBUILD_AFLAGS += -mabi=lp64
+	KBUILD_CFLAGS += -mabi=lp64d
+	KBUILD_AFLAGS += -mabi=lp64d
 
 	KBUILD_LDFLAGS += -melf64lriscv
 else
@@ -74,7 +74,9 @@ riscv-march-$(CONFIG_TOOLCHAIN_HAS_ZIHINTPAUSE) := $(riscv-march-y)_zihintpause
 
 # Remove F,D,V from isa string for all. Keep extensions between "fd" and "v" by
 # matching non-v and non-multi-letter extensions out with the filter ([^v_]*)
-KBUILD_CFLAGS += -march=$(shell echo $(riscv-march-y) | sed -E 's/(rv32ima|rv64ima)fd([^v_]*)v?/\1\2/')
+#KBUILD_CFLAGS += -march=$(shell echo $(riscv-march-y) | sed -E 's/(rv32ima|rv64ima)fd([^v_]*)v?/\1\2/')
+
+KBUILD_CFLAGS += -march=$(riscv-march-y)
 
 KBUILD_AFLAGS += -march=$(riscv-march-y)
 
