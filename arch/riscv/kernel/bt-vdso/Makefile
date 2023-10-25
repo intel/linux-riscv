@@ -12,8 +12,8 @@ include $(srctree)/lib/vdso/Makefile
 # Symbols present in the vdso
 vdso-syms += bt
 vdso-syms += ins_emu
-#  CFLAGS_bt.o += -fPIC -static-pie -fPIE
-#  CFLAGS_ins_emu.o += -fPIC -static-pie -fPIE
+CFLAGS_bt.o += -fno-pic -mcmodel=medany -mno-relax -fstack-check=no -fno-stack-protector
+CFLAGS_ins_emu.o += -fno-pic -mcmodel=medany -mno-relax -fstack-check=no -fno-stack-protector
 
 # Files to link into the vdso
 obj-vdso = $(patsubst %, %.o, $(vdso-syms)) note.o
@@ -44,10 +44,11 @@ $(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
 #                   -L /usr/riscv64-linux-gnu/lib/ -lc -lm \
 #                   -L /usr/lib/gcc-cross/riscv64-linux-gnu/9/ -latomic -lgcc \
 #	--build-id=sha1 --hash-style=both --eh-frame-hdr
-LDFLAGS_vdso.so.dbg = -static -warn-unresolved-symbols -soname=linux-bt-vdso.so.1 -L $(UC_BUILD) -lunicorn \
-                   -L /usr/riscv64-linux-gnu/lib/ -L /usr/lib/gcc-cross/riscv64-linux-gnu/9/ \
-                   --start-group -lc -lm -latomic -lgcc -lgcc_eh --end-group \
-	--build-id=sha1 --hash-style=both --eh-frame-hdr
+LDFLAGS_vdso.so.dbg = -static -warn-unresolved-symbols -soname=linux-bt-vdso.so.1 -L $(UC_BUILD) \
+		      --start-group -lunicorn-common -lriscv64-softmmu -lunicorn_static --end-group \
+		      -L $(MUSL_BUILD) -L /usr/lib/gcc-cross/riscv64-linux-gnu/9/ \
+		      --start-group -lc -lm -latomic -lgcc -lgcc_eh --end-group \
+		      --build-id=sha1 --hash-style=both --eh-frame-hdr
 
 # strip rule for the .so file
 $(obj)/%.so: OBJCOPYFLAGS := -S

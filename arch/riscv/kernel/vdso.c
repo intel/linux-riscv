@@ -309,10 +309,11 @@ static int __bt_setup_additional_pages(struct mm_struct *mm,
 	BUILD_BUG_ON(VVAR_NR_PAGES != __VVAR_PAGES);
 
 	vdso_text_len = vdso_info->vdso_pages << PAGE_SHIFT;
-
-	vdso_base = BT_VDSO_ADDR;
-
-	mm->context.bt_vdso = (void *)vdso_base;
+	vdso_base = get_unmapped_area(NULL, 0, vdso_text_len, 0, 0);
+	if (IS_ERR_VALUE(vdso_base)) {
+		ret = ERR_PTR(vdso_base);
+		goto up_fail;
+	}
 
 	ret =
 	   _install_special_mapping(mm, vdso_base, vdso_text_len,
@@ -321,9 +322,9 @@ static int __bt_setup_additional_pages(struct mm_struct *mm,
 
 	if (IS_ERR(ret))
 		goto up_fail;
-	else
-		populate_vma_page_range(ret, vdso_base,
-					vdso_base + vdso_text_len, &locked);
+
+	mm->context.bt_vdso = (void *)vdso_base;
+	populate_vma_page_range(ret, vdso_base, vdso_base + vdso_text_len, &locked);
 	if (locked)
 		mmap_read_unlock(mm);
 

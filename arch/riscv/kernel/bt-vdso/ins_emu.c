@@ -144,6 +144,27 @@ static void bt_context_restore(uc_engine *uc, struct pt_regs_ext *regs)
 	uc_reg_read(uc, UC_RISCV_REG_F31, &regs->fps.f31);
 }
 
+extern unsigned long __ucbt_entry[];
+extern unsigned long __ucbt_rel_start[];
+extern unsigned long __ucbt_rel_end[];
+
+//__attribute__((section(".bt.reloc")))
+static void ucbt_reloc(void)
+{
+	signed long delta = (signed long)__ucbt_entry - BT_VDSO_TEXT_STATIC_ADDR;
+	signed long val;
+	/* scan all entries in .got and .data for addrs that need relocation */
+	for (unsigned long *p = __ucbt_rel_start; p < __ucbt_rel_end; p++) {
+		val = *p;
+		/* check for relocation */
+		if ((val & BT_VDSO_ADDR_MASK) == BT_VDSO_RELOC_ID) {
+			val += delta;
+			*p = val;
+		}
+	}
+}
+
+//__attribute__((section(".bt")))
 int bt_entry(struct pt_regs_ext *regs)
 {
 	uc_engine *uc;
@@ -152,12 +173,13 @@ int bt_entry(struct pt_regs_ext *regs)
 	if (regs->ints.bt_cb != 0UL) {
 		uc = (uc_engine *)regs->ints.bt_cb;
 	} else {
+		ucbt_reloc();
 		// Initialize emulator in RISCV64 mode
 		err = uc_open(UC_ARCH_RISCV, UC_MODE_RISCV64, &uc);
 		if (err)
 			return err;
-		else
-			regs->ints.bt_cb = (unsigned long)uc;
+
+		regs->ints.bt_cb = (unsigned long)uc;
 
 		/* map 2^56 byte memory for this emulation, unicorn doesn't
 		 * allow pointer of 0, so skip one page

@@ -22,13 +22,11 @@ SECTIONS
 	.gnu.version_d	: { *(.gnu.version_d) }
 	.gnu.version_r	: { *(.gnu.version_r) }
 
-	.note		: { *(.note.*) }		:text	:note
-	.dynamic	: { *(.dynamic) }		:text	:dynamic
+	.note		: { *(.note.*) }
+	.dynamic	: { *(.dynamic) }
 
-	.eh_frame_hdr	: { *(.eh_frame_hdr) }		:text	:eh_frame_hdr
-	.eh_frame	: { KEEP (*(.eh_frame)) }	:text
-
-	.rodata		: { *(.rodata .rodata.* .gnu.linkonce.r.*) }
+	.eh_frame_hdr	: { *(.eh_frame_hdr) }
+	.eh_frame	: { KEEP (*(.eh_frame)) }
 
 	/*
 	 * This linker script is used both with -r and with -shared.
@@ -37,13 +35,25 @@ SECTIONS
 	 * insufficient, ld -shared will error; simply increase it here.
 	 */
 
-	PROVIDE(bt_vdso_B = bt_vdso_A + BT_VDSO_TEXT_OFFSET);
-	. = bt_vdso_B;
-	.text	: { KEEP(*(.bt)) *(.text .text.*) }	:text
+	. = BT_VDSO_TEXT_STATIC_ADDR;
+	PROVIDE_HIDDEN (__ucbt_entry = .);
+	.text	: { KEEP(*(.bt)) *(.text .text.*) }
 
+	. = ALIGN(8);
+	 __ucbt_rel_start = .;
+	.got	: { *(.got.plt) *(.igot.plt) *(.got) *(.igot) }
 	.data	: {
-		*(.got.plt) *(.got)
+		*(.rodata .rodata.* .gnu.linkonce.r.*)
+		*(.rodata1)
+		*(.sdata2 .sdata2.* .gnu.linkonce.s2.*)
+
 		*(.data .data.* .gnu.linkonce.d.*)
+		SORT(CONSTRUCTORS)
+		*(.data1)
+		*(.srodata.cst16) *(.srodata.cst8) *(.srodata.cst4) *(.srodata.cst2) *(.srodata .srodata.*)
+		*(.sdata .sdata.* .gnu.linkonce.s.*)
+	__ucbt_rel_end = .;
+
 		*(.dynsbss)
 		*(.sbss .sbss.* .gnu.linkonce.sb.*)
 		*(.scommon)

@@ -88,9 +88,11 @@ struct pt_regs_ext {
 
 /* Find a free addr range to host bt-vdso sections */
 /* #define BT_VDSO_ADDR 0xff1c000000000000 */
-#define BT_VDSO_ADDR		0x6000000
-#define BT_VDSO_TEXT_OFFSET	0x60000
-#define BT_VDSO_DATA_OFFSET	0x6000000
-#define BT_VDSO_END		0x10000000
+#define BT_VDSO_ADDR_MASK		0xffffffffff000000
+#define BT_VDSO_ADDR			0x0000000006000000
+#define BT_VDSO_RELOC_ID		BT_VDSO_ADDR
+#define BT_VDSO_TEXT_OFFSET		0x1000
+#define BT_VDSO_TEXT_STATIC_ADDR	(BT_VDSO_ADDR + BT_VDSO_TEXT_OFFSET)
+#define BT_VDSO_END			0x10000000
 
 #endif /* __VDSO_SOFT_ISA_H */
