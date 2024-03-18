@@ -12,7 +12,7 @@
 #else
 
 #include <asm/pgtable.h>
-#define LOAD_OFFSET KERNEL_LINK_ADDR
+#define LOAD_OFFSET 0
 
 #include <asm/vmlinux.lds.h>
 #include <asm/page.h>
@@ -30,7 +30,7 @@ jiffies = jiffies_64;
 SECTIONS
 {
 	/* Beginning of code and text segment */
-	. = LOAD_OFFSET;
+	. = 0x81000000;
 	_start = .;
 	HEAD_TEXT_SECTION
 	. = ALIGN(PAGE_SIZE);
