@@ -11,7 +11,7 @@
 #else
 
 #include <asm/pgtable.h>
-#define LOAD_OFFSET 0
+#define LOAD_OFFSET KERNEL_LINK_ADDR
 
 #include <asm/vmlinux.lds.h>
 #include <asm/page.h>
@@ -32,7 +32,7 @@ PECOFF_FILE_ALIGNMENT = 0x200;
 SECTIONS
 {
 	/* Beginning of code and text segment */
-	. = 0x81000000;
+	. = LOAD_OFFSET;
 	_start = .;
 	HEAD_TEXT_SECTION
 	. = ALIGN(PAGE_SIZE);
@@ -54,7 +54,7 @@ SECTIONS
 	. = ALIGN(SECTION_ALIGN);
 	__init_begin = .;
 	__init_text_begin = .;
-	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET) ALIGN(SECTION_ALIGN) { \
+	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET + 0x81000000) ALIGN(SECTION_ALIGN) { \
 		_sinittext = .;						\
 		INIT_TEXT						\
 		_einittext = .;						\
