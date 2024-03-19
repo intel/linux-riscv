@@ -7,5 +7,6 @@ subdir-y += sifive
 subdir-y += starfive
 subdir-y += thead
 subdir-y += sophgo
+subdir-y += virt
 
 obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix /, $(subdir-y))
