@@ -654,7 +654,7 @@ endmenu # "Boot options"
 config BUILTIN_DTB
 	bool
 	depends on OF && NONPORTABLE
-	default y if XIP_KERNEL
+	default y
 
 config PORTABLE
 	bool
