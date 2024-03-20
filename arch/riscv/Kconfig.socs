@@ -28,6 +28,7 @@ config SOC_STARFIVE
 
 config SOC_VIRT
 	bool "QEMU Virt Machine"
+	select BUILTIN_DTB
 	select CLINT_TIMER if RISCV_M_MODE
 	select POWER_RESET
 	select POWER_RESET_SYSCON
