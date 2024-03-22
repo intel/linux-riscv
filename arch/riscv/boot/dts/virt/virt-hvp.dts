@@ -61,12 +61,37 @@
 			};
 		};
 
+		cpu@1 {
+			phandle = <0x05>;
+			device_type = "cpu";
+			reg = <0x01>;
+			status = "okay";
+			compatible = "riscv";
+			riscv,cbop-block-size = <0x40>;
+			riscv,cboz-block-size = <0x40>;
+			riscv,cbom-block-size = <0x40>;
+			riscv,isa-extensions = "i\0m\0a\0f\0d\0c\0h\0zicbom\0zicbop\0zicboz\0zicntr\0zicsr\0zifencei\0zihintntl\0zihintpause\0zihpm\0zawrs\0zfa\0zca\0zcd\0zba\0zbb\0zbc\0zbs\0sstc\0svadu";
+			riscv,isa-base = "rv64i";
+			riscv,isa = "rv64imafdch_zicbom_zicbop_zicboz_zicntr_zicsr_zifencei_zihintntl_zihintpause_zihpm_zawrs_zfa_zca_zcd_zba_zbb_zbc_zbs_sstc_svadu";
+			mmu-type = "riscv,sv57";
+
+			interrupt-controller {
+				#interrupt-cells = <0x01>;
+				interrupt-controller;
+				compatible = "riscv,cpu-intc";
+				phandle = <0x06>;
+			};
+		};
+
+
 		cpu-map {
 
 			cluster0 {
-
 				core0 {
 					cpu = <0x01>;
+				};
+				core1 {
+					cpu = <0x05>;
 				};
 			};
 		};
