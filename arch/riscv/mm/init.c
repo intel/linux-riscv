@@ -785,6 +785,7 @@ retry:
 	hw_satp = csr_swap(CSR_SATP, 0ULL);
 	local_flush_tlb_all();
 
+	disable_pgtable_l5();
 	if (hw_satp != identity_satp) {
 		if (!check_l4) {
 			disable_pgtable_l5();
