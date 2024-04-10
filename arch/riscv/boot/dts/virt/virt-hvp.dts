@@ -115,6 +115,8 @@
 	};
 
 	chosen {
+		linux,initrd-end=<0x8b0a1787>;
+		linux,initrd-start=<0x89000000>;
 		stdout-path = "/soc/serial@10000000";
 		rng-seed = <0xa9190f30 0x26a52780 0xfb84fd46 0xc6eb49e8 0xc1db06b0 0x63a32fcb 0x628fd595 0x42170f06>;
 	};
