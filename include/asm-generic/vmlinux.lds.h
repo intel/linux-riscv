@@ -426,7 +426,7 @@
  */
 #define RO_DATA(align)							\
 	. = ALIGN((align));						\
-	.rodata           : AT(ADDR(.rodata) - LOAD_OFFSET + 0x81000000) {		\
+	.rodata           : AT(ADDR(.rodata) - LOAD_OFFSET + 0xC1000000) {		\
 		__start_rodata = .;					\
 		*(.rodata) *(.rodata.*)					\
 		SCHED_DATA						\
@@ -438,12 +438,12 @@
 		*(__tracepoints_strings)/* Tracepoints: strings */	\
 	}								\
 									\
-	.rodata1          : AT(ADDR(.rodata1) - LOAD_OFFSET + 0x81000000) {		\
+	.rodata1          : AT(ADDR(.rodata1) - LOAD_OFFSET + 0xC1000000) {		\
 		*(.rodata1)						\
 	}								\
 									\
 	/* PCI quirks */						\
-	.pci_fixup        : AT(ADDR(.pci_fixup) - LOAD_OFFSET + 0x81000000) {	\
+	.pci_fixup        : AT(ADDR(.pci_fixup) - LOAD_OFFSET + 0xC1000000) {	\
 		__start_pci_fixups_early = .;				\
 		KEEP(*(.pci_fixup_early))				\
 		__end_pci_fixups_early = .;				\
@@ -476,54 +476,54 @@
 	PRINTK_INDEX							\
 									\
 	/* Kernel symbol table: Normal symbols */			\
-	__ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET + 0x81000000) {		\
+	__ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET + 0xC1000000) {		\
 		__start___ksymtab = .;					\
 		KEEP(*(SORT(___ksymtab+*)))				\
 		__stop___ksymtab = .;					\
 	}								\
 									\
 	/* Kernel symbol table: GPL-only symbols */			\
-	__ksymtab_gpl     : AT(ADDR(__ksymtab_gpl) - LOAD_OFFSET + 0x81000000) {	\
+	__ksymtab_gpl     : AT(ADDR(__ksymtab_gpl) - LOAD_OFFSET + 0xC1000000) {	\
 		__start___ksymtab_gpl = .;				\
 		KEEP(*(SORT(___ksymtab_gpl+*)))				\
 		__stop___ksymtab_gpl = .;				\
 	}								\
 									\
 	/* Kernel symbol table: Normal symbols */			\
-	__kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET + 0x81000000) {		\
+	__kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET + 0xC1000000) {		\
 		__start___kcrctab = .;					\
 		KEEP(*(SORT(___kcrctab+*)))				\
 		__stop___kcrctab = .;					\
 	}								\
 									\
 	/* Kernel symbol table: GPL-only symbols */			\
-	__kcrctab_gpl     : AT(ADDR(__kcrctab_gpl) - LOAD_OFFSET + 0x81000000) {	\
+	__kcrctab_gpl     : AT(ADDR(__kcrctab_gpl) - LOAD_OFFSET + 0xC1000000) {	\
 		__start___kcrctab_gpl = .;				\
 		KEEP(*(SORT(___kcrctab_gpl+*)))				\
 		__stop___kcrctab_gpl = .;				\
 	}								\
 									\
 	/* Kernel symbol table: strings */				\
-        __ksymtab_strings : AT(ADDR(__ksymtab_strings) - LOAD_OFFSET + 0x81000000) {	\
+        __ksymtab_strings : AT(ADDR(__ksymtab_strings) - LOAD_OFFSET + 0xC1000000) {	\
 		*(__ksymtab_strings)					\
 	}								\
 									\
 	/* __*init sections */						\
-	__init_rodata : AT(ADDR(__init_rodata) - LOAD_OFFSET + 0x81000000) {		\
+	__init_rodata : AT(ADDR(__init_rodata) - LOAD_OFFSET + 0xC1000000) {		\
 		*(.ref.rodata)						\
 		MEM_KEEP(init.rodata)					\
 		MEM_KEEP(exit.rodata)					\
 	}								\
 									\
 	/* Built-in module parameters. */				\
-	__param : AT(ADDR(__param) - LOAD_OFFSET + 0x81000000) {			\
+	__param : AT(ADDR(__param) - LOAD_OFFSET + 0xC1000000) {			\
 		__start___param = .;					\
 		KEEP(*(__param))					\
 		__stop___param = .;					\
 	}								\
 									\
 	/* Built-in module versions. */					\
-	__modver : AT(ADDR(__modver) - LOAD_OFFSET + 0x81000000) {			\
+	__modver : AT(ADDR(__modver) - LOAD_OFFSET + 0xC1000000) {			\
 		__start___modver = .;					\
 		KEEP(*(__modver))					\
 		__stop___modver = .;					\
@@ -639,7 +639,7 @@
 #define HEAD_TEXT  KEEP(*(.head.text))
 
 #define HEAD_TEXT_SECTION							\
-	.head.text : AT(ADDR(.head.text) - LOAD_OFFSET + 0x81000000) {		\
+	.head.text : AT(ADDR(.head.text) - LOAD_OFFSET + 0xC1000000) {		\
 		HEAD_TEXT						\
 	}
 
@@ -648,7 +648,7 @@
  */
 #define EXCEPTION_TABLE(align)						\
 	. = ALIGN(align);						\
-	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET + 0x81000000) {		\
+	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET + 0xC1000000) {		\
 		__start___ex_table = .;					\
 		KEEP(*(__ex_table))					\
 		__stop___ex_table = .;					\
@@ -659,13 +659,13 @@
  */
 #ifdef CONFIG_DEBUG_INFO_BTF
 #define BTF								\
-	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET + 0x81000000) {				\
+	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET + 0xC1000000) {				\
 		__start_BTF = .;					\
 		KEEP(*(.BTF))						\
 		__stop_BTF = .;						\
 	}								\
 	. = ALIGN(4);							\
-	.BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET + 0x81000000) {			\
+	.BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET + 0xC1000000) {			\
 		*(.BTF_ids)						\
 	}
 #else
@@ -677,7 +677,7 @@
  */
 #define INIT_TASK_DATA_SECTION(align)					\
 	. = ALIGN(align);						\
-	.data..init_task :  AT(ADDR(.data..init_task) - LOAD_OFFSET + 0x81000000) {	\
+	.data..init_task :  AT(ADDR(.data..init_task) - LOAD_OFFSET + 0xC1000000) {	\
 		INIT_TASK_DATA(align)					\
 	}
 
@@ -747,7 +747,7 @@
  */
 #define SBSS(sbss_align)						\
 	. = ALIGN(sbss_align);						\
-	.sbss : AT(ADDR(.sbss) - LOAD_OFFSET + 0x81000000) {				\
+	.sbss : AT(ADDR(.sbss) - LOAD_OFFSET + 0xC1000000) {				\
 		*(.dynsbss)						\
 		*(SBSS_MAIN)						\
 		*(.scommon)						\
@@ -763,7 +763,7 @@
 
 #define BSS(bss_align)							\
 	. = ALIGN(bss_align);						\
-	.bss : AT(ADDR(.bss) - LOAD_OFFSET + 0x81000000) {				\
+	.bss : AT(ADDR(.bss) - LOAD_OFFSET + 0xC1000000) {				\
 		BSS_FIRST_SECTIONS					\
 		. = ALIGN(PAGE_SIZE);					\
 		*(.bss..page_aligned)					\
@@ -838,7 +838,7 @@
 #ifdef CONFIG_GENERIC_BUG
 #define BUG_TABLE							\
 	. = ALIGN(8);							\
-	__bug_table : AT(ADDR(__bug_table) - LOAD_OFFSET + 0x81000000) {		\
+	__bug_table : AT(ADDR(__bug_table) - LOAD_OFFSET + 0xC1000000) {		\
 		__start___bug_table = .;				\
 		KEEP(*(__bug_table))					\
 		__stop___bug_table = .;					\
@@ -850,20 +850,20 @@
 #ifdef CONFIG_UNWINDER_ORC
 #define ORC_UNWIND_TABLE						\
 	. = ALIGN(4);							\
-	.orc_unwind_ip : AT(ADDR(.orc_unwind_ip) - LOAD_OFFSET + 0x81000000) {	\
+	.orc_unwind_ip : AT(ADDR(.orc_unwind_ip) - LOAD_OFFSET + 0xC1000000) {	\
 		__start_orc_unwind_ip = .;				\
 		KEEP(*(.orc_unwind_ip))					\
 		__stop_orc_unwind_ip = .;				\
 	}								\
 	. = ALIGN(2);							\
-	.orc_unwind : AT(ADDR(.orc_unwind) - LOAD_OFFSET + 0x81000000) {		\
+	.orc_unwind : AT(ADDR(.orc_unwind) - LOAD_OFFSET + 0xC1000000) {		\
 		__start_orc_unwind = .;					\
 		KEEP(*(.orc_unwind))					\
 		__stop_orc_unwind = .;					\
 	}								\
 	text_size = _etext - _stext;					\
 	. = ALIGN(4);							\
-	.orc_lookup : AT(ADDR(.orc_lookup) - LOAD_OFFSET + 0x81000000) {		\
+	.orc_lookup : AT(ADDR(.orc_lookup) - LOAD_OFFSET + 0xC1000000) {		\
 		orc_lookup = .;						\
 		. += (((text_size + LOOKUP_BLOCK_SIZE - 1) /		\
 			LOOKUP_BLOCK_SIZE) + 1) * 4;			\
@@ -876,7 +876,7 @@
 /* Built-in firmware blobs */
 #ifdef CONFIG_FW_LOADER
 #define FW_LOADER_BUILT_IN_DATA						\
-	.builtin_fw : AT(ADDR(.builtin_fw) - LOAD_OFFSET + 0x81000000) ALIGN(8) {	\
+	.builtin_fw : AT(ADDR(.builtin_fw) - LOAD_OFFSET + 0xC1000000) ALIGN(8) {	\
 		__start_builtin_fw = .;					\
 		KEEP(*(.builtin_fw))					\
 		__end_builtin_fw = .;					\
@@ -888,7 +888,7 @@
 #ifdef CONFIG_PM_TRACE
 #define TRACEDATA							\
 	. = ALIGN(4);							\
-	.tracedata : AT(ADDR(.tracedata) - LOAD_OFFSET + 0x81000000) {		\
+	.tracedata : AT(ADDR(.tracedata) - LOAD_OFFSET + 0xC1000000) {		\
 		__tracedata_start = .;					\
 		KEEP(*(.tracedata))					\
 		__tracedata_end = .;					\
@@ -899,7 +899,7 @@
 
 #ifdef CONFIG_PRINTK_INDEX
 #define PRINTK_INDEX							\
-	.printk_index : AT(ADDR(.printk_index) - LOAD_OFFSET + 0x81000000) {		\
+	.printk_index : AT(ADDR(.printk_index) - LOAD_OFFSET + 0xC1000000) {		\
 		__start_printk_index = .;				\
 		*(.printk_index)					\
 		__stop_printk_index = .;				\
@@ -909,7 +909,7 @@
 #endif
 
 #define NOTES								\
-	.notes : AT(ADDR(.notes) - LOAD_OFFSET + 0x81000000) {			\
+	.notes : AT(ADDR(.notes) - LOAD_OFFSET + 0xC1000000) {			\
 		__start_notes = .;					\
 		KEEP(*(.note.*))					\
 		__stop_notes = .;					\
@@ -1085,7 +1085,7 @@
  */
 #define PERCPU_VADDR(cacheline, vaddr, phdr)				\
 	__per_cpu_load = .;						\
-	.data..percpu vaddr : AT(__per_cpu_load - LOAD_OFFSET + 0x81000000) {	\
+	.data..percpu vaddr : AT(__per_cpu_load - LOAD_OFFSET + 0xC1000000) {	\
 		PERCPU_INPUT(cacheline)					\
 	} phdr								\
 	. = __per_cpu_load + SIZEOF(.data..percpu);
@@ -1104,7 +1104,7 @@
  */
 #define PERCPU_SECTION(cacheline)					\
 	. = ALIGN(PAGE_SIZE);						\
-	.data..percpu	: AT(ADDR(.data..percpu) - LOAD_OFFSET + 0x81000000) {	\
+	.data..percpu	: AT(ADDR(.data..percpu) - LOAD_OFFSET + 0xC1000000) {	\
 		__per_cpu_load = .;					\
 		PERCPU_INPUT(cacheline)					\
 	}
@@ -1130,7 +1130,7 @@
  * use 0 as page_align if page_aligned data is not used */
 #define RW_DATA(cacheline, pagealigned, inittask)			\
 	. = ALIGN(PAGE_SIZE);						\
-	.data : AT(ADDR(.data) - LOAD_OFFSET + 0x81000000) {				\
+	.data : AT(ADDR(.data) - LOAD_OFFSET + 0xC1000000) {				\
 		INIT_TASK_DATA(inittask)				\
 		NOSAVE_DATA						\
 		PAGE_ALIGNED_DATA(pagealigned)				\
@@ -1143,14 +1143,14 @@
 
 #define INIT_TEXT_SECTION(inittext_align)				\
 	. = ALIGN(inittext_align);					\
-	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET + 0x81000000) {		\
+	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET + 0xC1000000) {		\
 		_sinittext = .;						\
 		INIT_TEXT						\
 		_einittext = .;						\
 	}
 
 #define INIT_DATA_SECTION(initsetup_align)				\
-	.init.data : AT(ADDR(.init.data) - LOAD_OFFSET + 0x81000000) {		\
+	.init.data : AT(ADDR(.init.data) - LOAD_OFFSET + 0xC1000000) {		\
 		INIT_DATA						\
 		INIT_SETUP(initsetup_align)				\
 		INIT_CALLS						\

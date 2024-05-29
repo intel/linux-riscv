@@ -54,7 +54,7 @@ SECTIONS
 	. = ALIGN(SECTION_ALIGN);
 	__init_begin = .;
 	__init_text_begin = .;
-	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET + 0x81000000) ALIGN(SECTION_ALIGN) { \
+	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET + 0xC1000000) ALIGN(SECTION_ALIGN) { \
 		_sinittext = .;						\
 		INIT_TEXT						\
 		_einittext = .;						\
