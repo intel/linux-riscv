@@ -325,7 +325,8 @@ CONFIG_RISCV_BOOT_SPINWAIT=y
 #
 # Boot options
 #
-CONFIG_CMDLINE="earlycon=uart,mmio,0x10000000 console=ttyS0,115200 debug loglevel=8 root=/dev/ram"
+#CONFIG_CMDLINE="earlycon=uart,mmio,0x10000000 console=ttyS0,115200 debug loglevel=8 root=/dev/ram"
+CONFIG_CMDLINE="console=ttyS0,115200 debug loglevel=8 root=/dev/ram"
 CONFIG_CMDLINE_FALLBACK=y
 # CONFIG_CMDLINE_EXTEND is not set
 # CONFIG_CMDLINE_FORCE is not set
