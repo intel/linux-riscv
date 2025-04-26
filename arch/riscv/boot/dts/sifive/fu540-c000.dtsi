@@ -326,3 +326,45 @@
 		};
 	};
 };
+
+/ {
+	mpxy_mbox: sbi-mpxy-mbox {
+		compatible = "riscv,sbi-mpxy-mbox";
+		#mbox-cells = <2>;
+	};
+
+	rpmi_mm_0 {
+		riscv,sbi-mpxy-channel-id = <0x0>;
+		test,owner-hart = <0x1>;
+		compatible = "riscv,sbi-mpxy-mm";
+	};
+
+	rpmi_mm_1 {
+		riscv,sbi-mpxy-channel-id = <0x1>;
+		test,owner-hart = <0x2>;
+		compatible = "riscv,sbi-mpxy-mm";
+	};
+
+	rpmi_mm_2 {
+		riscv,sbi-mpxy-channel-id = <0x2>;
+		test,owner-hart = <0x3>;
+		compatible = "riscv,sbi-mpxy-mm";
+	};
+
+	rpmi_mm_3 {
+		riscv,sbi-mpxy-channel-id = <0x3>;
+		test,owner-hart = <0x4>;
+		compatible = "riscv,sbi-mpxy-mm";
+	};
+
+	firmware {
+		optee {
+			compatible = "linaro,optee-tz";
+			method = "smc";
+			mboxes = <&mpxy_mbox 0x00 0x00>,
+				 <&mpxy_mbox 0x01 0x00>,
+				 <&mpxy_mbox 0x02 0x00>,
+				 <&mpxy_mbox 0x03 0x00>;
+		};
+	};
+};
