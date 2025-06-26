@@ -9,6 +9,6 @@ subdir-y += spacemit
 subdir-y += starfive
 subdir-y += thead
 subdir-y += qemu
-subdir-y += virt
+subdir-y += hvp
 
 obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix .dtb.o, $(CONFIG_BUILTIN_DTB_SOURCE))

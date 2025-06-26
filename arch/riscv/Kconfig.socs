@@ -71,6 +71,22 @@ config ARCH_VIRT
 	help
 	  This enables support for QEMU Virt Machine.
 
+config SOC_HVP
+	bool "HVP Virt Machine"
+	select BUILTIN_DTB
+	select CLINT_TIMER if RISCV_M_MODE
+	select POWER_RESET
+	select POWER_RESET_SYSCON
+	select POWER_RESET_SYSCON_POWEROFF
+	select GOLDFISH
+	select RTC_DRV_GOLDFISH if RTC_CLASS
+	select SIFIVE_PLIC
+	select PM_GENERIC_DOMAINS if PM
+	select PM_GENERIC_DOMAINS_OF if PM && OF
+	select RISCV_SBI_CPUIDLE if CPU_IDLE && RISCV_SBI
+	help
+	  This enables support for HVP Virt Machine.
+
 config ARCH_CANAAN
 	bool "Canaan Kendryte SoC"
 	help
