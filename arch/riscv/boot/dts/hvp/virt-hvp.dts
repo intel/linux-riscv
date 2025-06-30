@@ -38,7 +38,7 @@
 		#size-cells = <0x00>;
 		timebase-frequency = <0x989680>;
 
-		cpu@0 {
+		cpu0: cpu@0 {
 			phandle = <0x07>;
 			device_type = "cpu";
 			reg = <0x00>;
@@ -60,7 +60,7 @@
 			};
 		};
 
-		cpu@1 {
+		cpu1: cpu@1 {
 			phandle = <0x05>;
 			device_type = "cpu";
 			reg = <0x01>;
@@ -119,6 +119,79 @@
 		linux,initrd-start = <0x89000000>;
 		stdout-path = "/soc/serial@10000000";
 		rng-seed = <0xb27a933a 0x1c40207b 0xf3948ed1 0xe1e9a13b 0xa61f344b 0xe2509f8a 0xe1c71e1f 0x70f0e95b>;
+		opensbi-domains {
+			compatible = "opensbi,domain,config";
+
+			tmem: tmem {
+				compatible = "opensbi,domain,memregion";
+				base = <0x0 0xF1000000>;
+				order = <24>; // 16MiB
+			};
+
+			allmem: allmem {
+				compatible = "opensbi,domain,memregion";
+				base = <0x0 0x0>;
+				order = <64>;
+			};
+
+			tdomain: trusted-domain {
+				compatible = "opensbi,domain,instance";
+				regions = <&allmem 0x3f>;
+				possible-harts = <&cpu0 &cpu1>;
+				next-addr = <0x0 0xC1000000>; /* optee_os: CFG_TDDRAM_START */
+				next-mode = <0x1>;
+			};
+
+			udomain: untrusted-domain {
+				compatible = "opensbi,domain,instance";
+				regions = <&tmem 0x0>, <&allmem 0x3f>;
+				possible-harts = <&cpu0 &cpu1>;
+				boot-hart = <&cpu0>;
+				next-addr = <0x0 0x81200000>; /* u-boot: CONFIG_TEXT_BASE */
+				next-mode = <0x1>;
+			};
+		};
+	};
+
+	mpxy_mbox: sbi-mpxy-mbox {
+		compatible = "riscv,sbi-mpxy-mbox";
+		#mbox-cells = <2>;
+	};
+
+	rpmi_mm_0 {
+		opensbi-domain-instance = <&tdomain>;
+		riscv,sbi-mpxy-channel-id = <0x0>;
+		test,owner-hart = <0x0>;
+		test,reqfwd-channel-id = <0x10>;
+		compatible = "riscv,sbi-mpxy-mm";
+	};
+
+	rpmi_mm_1 {
+		opensbi-domain-instance = <&tdomain>;
+		riscv,sbi-mpxy-channel-id = <0x1>;
+		test,owner-hart = <0x1>;
+		test,reqfwd-channel-id = <0x11>;
+		compatible = "riscv,sbi-mpxy-mm";
+	};
+
+	rpmi_reqfwd_0 {
+		riscv,sbi-mpxy-channel-id = <0x10>;
+		test,owner-hart = <0x0>;
+		compatible = "riscv,sbi-mpxy-reqfwd";
+	};
+
+	rpmi_reqfwd_1 {
+		riscv,sbi-mpxy-channel-id = <0x11>;
+		test,owner-hart = <0x1>;
+		compatible = "riscv,sbi-mpxy-reqfwd";
+	};
+
+	firmware {
+		optee {
+			compatible = "linaro,optee-tz";
+			method = "smc";
+			mboxes = <&mpxy_mbox 0x00 0x00>, <&mpxy_mbox 0x01 0x00>;
+		};
 	};
 
 	soc {
