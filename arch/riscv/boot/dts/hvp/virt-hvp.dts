@@ -28,9 +28,9 @@
 		compatible = "qemu,platform\0simple-bus";
 	};
 
-	memory@81000000 {
+	memory@90000000 {
 		device_type = "memory";
-		reg = <0x00 0x81000000 0x00 0x3f000000>;
+		reg = <0x00 0x90000000 0x00 0x30000000>;
 	};
 
 	cpus {
@@ -115,8 +115,8 @@
 	};
 
 	chosen {
-		linux,initrd-end = <0x8a000000>;
-		linux,initrd-start = <0x89000000>;
+		linux,initrd-end = <0x9a000000>;
+		linux,initrd-start = <0x99000000>;
 		stdout-path = "/soc/serial@10000000";
 		rng-seed = <0xb27a933a 0x1c40207b 0xf3948ed1 0xe1e9a13b 0xa61f344b 0xe2509f8a 0xe1c71e1f 0x70f0e95b>;
 		opensbi-domains {
